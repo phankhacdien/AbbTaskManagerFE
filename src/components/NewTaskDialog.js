@@ -3,7 +3,7 @@ import { createTask } from '../api';
 
 export default function NewTaskDialog({ onClose, onCreate }) {
     const [form, setForm] = useState({
-        id: '',
+        jiraNo: '',
         requester: '',
         name: '',
         startDate: '',
@@ -33,17 +33,30 @@ export default function NewTaskDialog({ onClose, onCreate }) {
             <div className="bg-white text-black rounded-lg p-6 w-full max-w-lg">
                 <h2 className="text-xl font-bold mb-4">Create New Task</h2>
                 <form onSubmit={handleSubmit} className="space-y-3">
-                    {['id', 'requester', 'name', 'startDate', 'dueDate', 'status', 'environment', 'note'].map(field => (
-                        <input
-                            key={field}
-                            name={field}
-                            type={field.includes('Date') ? 'date' : 'text'}
-                            value={form[field]}
-                            onChange={handleChange}
-                            placeholder={field}
-                            className="w-full border p-2 rounded"
-                            required={['id', 'requester', 'name'].includes(field)}
-                        />
+                    {[
+                        { label: 'Jira Number', name: 'jiraNo' },
+                        { label: 'Requester', name: 'requester' },
+                        { label: 'Task Name', name: 'title' },
+                        { label: 'Start Date', name: 'startDate', type: 'date' },
+                        { label: 'Due Date', name: 'dueDate', type: 'date' },
+                        { label: 'Status', name: 'status' },
+                        { label: 'Dev Environment', name: 'environment' },
+                        { label: 'Note', name: 'notes' }
+                    ].map(({label, name, type}) => (
+                        <div key={name} className="flex items-center mb-3">
+                            <label htmlFor={name} className="w-32 text-sm font-semibold text-gray-700">
+                                {label}:
+                            </label>
+                            <input
+                                id={name}
+                                name={name}
+                                type={type || 'text'}
+                                value={form[name]}
+                                onChange={handleChange}
+                                className="flex-1 border border-gray-300 p-2 rounded"
+                                required={['id', 'requester', 'name'].includes(name)}
+                            />
+                        </div>
                     ))}
                     <div className="flex justify-end space-x-3 mt-4">
                         <button type="button" onClick={onClose} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
