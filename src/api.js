@@ -36,3 +36,19 @@ export const deleteTasks = (selectedIds) => {
         body: JSON.stringify(selectedIds),
     });
 };
+
+export async function getParameterValues(type) {
+  const res = await fetch(`http://localhost:8080/api/${type}`);
+  if (!res.ok) throw new Error('Failed to fetch parameters');
+  return res.json();
+}
+
+export async function addParameterValue(type, value) {
+  const res = await fetch(`http://localhost:8080/api/${type}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: value }),
+  });
+  if (!res.ok) throw new Error('Failed to add parameter');
+}
+

@@ -1,11 +1,13 @@
 import React, { useRef, useState } from 'react';
 import NewTaskDialog from './NewTaskDialog';
 import * as XLSX from 'xlsx';
+import ParameterDialog from './ParameterDialog';
 
 export default function HeaderBar({ onTaskCreated, onTasksImported }) {
 	const [showDialog, setShowDialog] = useState(false);
+	const [showParamDialog, setShowParamDialog] = useState(false);
 	const fileInputRef = useRef(null);
-	const filters = ['New Task', 'Suspend', 'Done', 'PreGolive', 'All'];
+	// const filters = ['New Task', 'Suspend', 'Done', 'PreGolive', 'All'];
 	const [importing, setImporting] = useState(false);
 	const [progress, setProgress] = useState(0); // percentage
 
@@ -39,7 +41,7 @@ export default function HeaderBar({ onTaskCreated, onTasksImported }) {
 			const formatted = json.map((row) => ({
 				jiraNo: row['Jira No'] || '',
 				requester: row['Requester'] || '',
-				title: row['Task Name'] || '',
+				title: (row['Task Name'] || '').replace(/_/g, ' '),
 				startDate: row['Start Date'] || '',
 				dueDate: row['Due Date'] || '',
 				status: row['Status'] || '',
@@ -76,15 +78,12 @@ export default function HeaderBar({ onTaskCreated, onTasksImported }) {
 		<>
 			<div className="flex items-center space-x-4 mb-6">
 				<div className="text-2xl">📋</div>
-				{filters.map(f => (
-					<button
-						key={f}
-						className={`px-4 py-1 rounded-full ${f === 'New Task' ? 'bg-blue-500' : 'bg-gray-600'} hover:bg-blue-600`}
-						onClick={() => f === 'New Task' && setShowDialog(true)}
-					>
-						{f}
-					</button>
-				))}
+				<button
+					className="px-4 py-1 rounded-full bg-blue-500 hover:bg-blue-600"
+					onClick={() => setShowDialog(true)}
+				>
+					New Task
+				</button>
 
 				{/* 📥 Import Excel button */}
 				<button
@@ -115,6 +114,14 @@ export default function HeaderBar({ onTaskCreated, onTasksImported }) {
 					onChange={handleImportExcel}
 				/>
 
+				{/* ⚙️ Settings Button */}
+				<button
+					onClick={() => setShowParamDialog(true)}
+					className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-full"
+				>
+					⚙️ Setting Parameters
+				</button>
+
 				{/* Search */}
 				<div className="ml-auto">
 					<input type="text" placeholder="Search..." className="rounded px-3 py-1 text-black" />
@@ -122,6 +129,7 @@ export default function HeaderBar({ onTaskCreated, onTasksImported }) {
 			</div>
 
 			{showDialog && <NewTaskDialog onClose={() => setShowDialog(false)} onCreate={onTaskCreated} />}
+			{showParamDialog && <ParameterDialog onClose={() => setShowParamDialog(false)} onUpdated={() => window.location.reload()} />}
 		</>
 	);
 }

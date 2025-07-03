@@ -40,14 +40,14 @@ function EditableSelect({ value, onChange, paramType }) {
 				<div className="absolute left-0 top-full w-full bg-white text-black border border-gray-300 max-h-40 overflow-y-auto z-50">
 					{options.map((opt, idx) => (
 						<div
-							key={idx}
+							key={opt.id || idx}
 							className="px-2 py-1 hover:bg-blue-100 cursor-pointer"
 							onClick={() => {
-								onChange(opt);
+								onChange(opt.name);
 								setShowDropdown(false);
 							}}
 						>
-							{opt}
+							{opt.name}
 						</div>
 					))}
 				</div>
